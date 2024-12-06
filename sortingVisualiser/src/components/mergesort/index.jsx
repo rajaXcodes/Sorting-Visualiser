@@ -7,33 +7,29 @@ function MergeSort() {
   const [isSorting, setIsSorting] = useState(false);
   const [animationTimeouts, setAnimationTimeouts] = useState([]);
 
-  // Initialize array with random values
   function initialiseArray() {
     const newArray = Array.from({ length: len }, () =>
       Math.floor(Math.random() * 300 + 10)
     );
-    setArray(newArray);
     setIsSorting(false);
+    setArray(newArray);
   }
 
   useEffect(() => {
     initialiseArray();
   }, [len]);
 
-  // Cleanup any timeouts on unmount or reset
   useEffect(() => {
     return () => {
-      animationTimeouts.forEach((timeout) => clearTimeout(timeout));
-      setAnimationTimeouts([]);
-      setIsSorting(false);
+      animationTimeouts.forEach((timeout) => clearTimeout(timeout)); // Cleanup timeouts on unmount
+      setAnimationTimeouts([]); // Reset animation state
+      setIsSorting(false); // Reset sorting state
     };
-  }, [animationTimeouts]);
+  }, []);
 
-  // Merge sort utility function
-  function util() {
-    if (isSorting) return; // Prevent sorting if already in progress
+  function mergeSort() {
+    if (isSorting) return;
     setIsSorting(true);
-
     const animations = [];
     const copyArray = [...array];
 
@@ -45,13 +41,11 @@ function MergeSort() {
       merge(array, start, mid, end);
     };
 
-    // Merge function to combine sorted halves
     const merge = (array, start, mid, end) => {
       const temp = [];
       let i = start,
         j = mid + 1;
 
-      // Merge two sorted halves
       while (i <= mid && j <= end) {
         if (array[i] <= array[j]) {
           temp.push(array[i++]);
@@ -63,7 +57,6 @@ function MergeSort() {
       while (i <= mid) temp.push(array[i++]);
       while (j <= end) temp.push(array[j++]);
 
-      // Update the main array and add animation steps
       for (let k = start; k <= end; k++) {
         animations.push([k, temp[k - start]]);
         array[k] = temp[k - start];
@@ -71,10 +64,9 @@ function MergeSort() {
     };
 
     mergeSortHelper(copyArray, 0, copyArray.length - 1);
-    animateSorting(animations); // Trigger animations
+    animateSorting(animations);
   }
 
-  // Animate sorting based on generated animations
   const animateSorting = (animations) => {
     const timeouts = [];
     for (let i = 0; i < animations.length; i++) {
@@ -82,36 +74,33 @@ function MergeSort() {
         const [barIdx, newHeight] = animations[i];
         const arrayBars = document.getElementsByClassName("array-bar");
 
-        // Highlight the bar while it's being sorted
         arrayBars[barIdx].style.backgroundColor = "red";
         setTimeout(() => {
           arrayBars[barIdx].style.height = `${newHeight}px`;
           arrayBars[barIdx].style.backgroundColor = "blue";
         }, 100);
-      }, i * 200); // Delay each animation step by 200ms
+      }, i * 200);
       timeouts.push(timeout);
     }
 
-    // Reset state after all animations are done
     setTimeout(() => {
       setIsSorting(false);
       setAnimationTimeouts([]);
     }, animations.length * 200);
 
-    setAnimationTimeouts(timeouts); // Store the timeouts
+    setAnimationTimeouts(timeouts);
   };
 
-  // Handle reset action
   const handleReset = () => {
-    animationTimeouts.forEach((timeout) => clearTimeout(timeout)); // Clear previous animations
+    animationTimeouts.forEach((timeout) => clearTimeout(timeout));
     setAnimationTimeouts([]);
-    initialiseArray(); // Reset the array and sorting state
+    initialiseArray();
   };
 
   return (
     <div>
       <h1>Merge Sort</h1>
-      <h4>Time Complexity = O(nlog(n))</h4>
+      <h4>Time Complexity = O(n log n)</h4>
       <div className="array-container">
         <div className="controls-container">
           <select
@@ -120,12 +109,12 @@ function MergeSort() {
             onChange={(event) => setLength(parseInt(event.target.value))}
             value={len}
           >
-            <option value="30">30</option>
-            <option value="40">40</option>
-            <option value="50">50</option>
-            <option value="60">60</option>
+            <option value="40">30</option>
+            <option value="70">40</option>
+            <option value="90">50</option>
+            <option value="100">60</option>
           </select>
-          <button onClick={util} disabled={isSorting}>
+          <button onClick={mergeSort} disabled={isSorting}>
             Start
           </button>
           <button onClick={handleReset}>Reset Array</button>

@@ -4,20 +4,21 @@ import "./index.css";
 function InsertionSort() {
   const [array, setArray] = useState([]);
   const [len, setLength] = useState(50);
-  const [isSortingIS, setIsSortingIS] = useState(false);
+  const [isSorting, setIsSorting] = useState(false);
   const [animationTimeouts, setAnimationTimeouts] = useState([]);
 
   function initialiseArray() {
     const newArray = Array.from({ length: len }, () =>
       Math.floor(Math.random() * 300 + 10)
     );
+    setIsSorting(false);
     setArray(newArray);
-    setIsSortingIS(false);
   }
 
   useEffect(() => {
     initialiseArray();
   }, [len]);
+
   useEffect(() => {
     return () => {
       animationTimeouts.forEach((timeout) => clearTimeout(timeout)); // Cleanup timeouts on unmount
@@ -25,20 +26,24 @@ function InsertionSort() {
       setIsSorting(false); // Reset sorting state
     };
   }, []);
-  function util() {
-    if (isSortingIS) return;
-    setIsSortingIS(true);
 
+  function insertionSort() {
+    if (isSorting) return;
+    setIsSorting(true);
     const animations = [];
     const copyArray = [...array];
 
+    // Insertion Sort Algorithm
     for (let i = 1; i < copyArray.length; i++) {
-      let j = i;
-      while (j > 0 && copyArray[j] < copyArray[j - 1]) {
-        animations.push([j, j - 1]);
-        [copyArray[j], copyArray[j - 1]] = [copyArray[j - 1], copyArray[j]];
+      let j = i - 1;
+      let key = copyArray[i];
+      while (j >= 0 && copyArray[j] > key) {
+        copyArray[j + 1] = copyArray[j];
+        animations.push([j, j + 1]);
         j--;
       }
+      copyArray[j + 1] = key;
+      animations.push([j + 1, key]);
     }
 
     animateSorting(animations);
@@ -48,24 +53,20 @@ function InsertionSort() {
     const timeouts = [];
     for (let i = 0; i < animations.length; i++) {
       const timeout = setTimeout(() => {
-        const [barOneIdx, barTwoIdx] = animations[i];
+        const [barIdx, newHeight] = animations[i];
         const arrayBars = document.getElementsByClassName("array-bar");
-        arrayBars[barOneIdx].style.backgroundColor = "red";
-        arrayBars[barTwoIdx].style.backgroundColor = "red";
 
+        arrayBars[barIdx].style.backgroundColor = "red";
         setTimeout(() => {
-          const tempHeight = arrayBars[barOneIdx].style.height;
-          arrayBars[barOneIdx].style.height = arrayBars[barTwoIdx].style.height;
-          arrayBars[barTwoIdx].style.height = tempHeight;
-          arrayBars[barOneIdx].style.backgroundColor = "blue";
-          arrayBars[barTwoIdx].style.backgroundColor = "blue";
+          arrayBars[barIdx].style.height = `${newHeight}px`;
+          arrayBars[barIdx].style.backgroundColor = "blue";
         }, 100);
-      }, i * 200);
+      }, i * 150);
       timeouts.push(timeout);
     }
 
     setTimeout(() => {
-      setIsSortingIS(false);
+      setIsSorting(false);
       setAnimationTimeouts([]);
     }, animations.length * 200);
 
@@ -81,7 +82,9 @@ function InsertionSort() {
   return (
     <div>
       <h1>Insertion Sort</h1>
-      <h4>Time Complexity = O(n^2)</h4>
+      <h4>
+        Time Complexity = O(n<sup>2</sup>)
+      </h4>
       <div className="array-container">
         <div className="controls-container">
           <select
@@ -90,17 +93,15 @@ function InsertionSort() {
             onChange={(event) => setLength(parseInt(event.target.value))}
             value={len}
           >
-            <option value="30">30</option>
-            <option value="40">40</option>
-            <option value="50">50</option>
-            <option value="60">60</option>
+            <option value="40">30</option>
+            <option value="70">40</option>
+            <option value="90">50</option>
+            <option value="100">60</option>
           </select>
-          <button onClick={util} disabled={isSortingIS}>
+          <button onClick={insertionSort} disabled={isSorting}>
             Start
           </button>
-          <button onClick={handleReset}>
-            Reset Array
-          </button>
+          <button onClick={handleReset}>Reset Array</button>
         </div>
         <div className="array-bars">
           {array.map((val, idx) => (
