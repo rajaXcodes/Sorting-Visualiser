@@ -4,29 +4,34 @@ import "./bubbleSort.css";
 function BubbleSort() {
   const [array, setArray] = useState([]);
   const [len, setLength] = useState(50);
-  const [isPaused, setIsPaused] = useState(false);
   const [isSorting, setIsSorting] = useState(false);
-  const [animations, setAnimations] = useState([]);
+  const [animationTimeouts, setAnimationTimeouts] = useState([]);
 
   function initialiseArray() {
     const newArray = Array.from({ length: len }, () =>
       Math.floor(Math.random() * 300 + 10)
     );
+    setIsSorting(false);
     setArray(newArray);
-    setAnimations([]); // Reset animations when resetting the array
-    setIsSorting(false); // Reset sorting state
   }
 
   useEffect(() => {
     initialiseArray();
   }, [len]);
-
+  useEffect(() => {
+    return () => {
+      animationTimeouts.forEach((timeout) => clearTimeout(timeout)); // Cleanup timeouts on unmount
+      setAnimationTimeouts([]); // Reset animation state
+      setIsSorting(false); // Reset sorting state
+    };
+  }, []);
   function bubbleSort() {
-    if (isSorting) return; // Don't start sorting if already sorting
-    setIsSorting(true);
+    if (isSorting) return;
+    setIsSorting(true); // Set sorting state to true when sorting starts
     const animations = [];
     const copyarray = [...array];
 
+    // Bubble Sort Algorithm
     for (let i = 0; i < copyarray.length - 1; i++) {
       for (let j = 0; j < copyarray.length - i - 1; j++) {
         if (copyarray[j] > copyarray[j + 1]) {
@@ -35,15 +40,13 @@ function BubbleSort() {
         }
       }
     }
-    setAnimations(animations);
+
     animateSorting(animations);
   }
-
-  function animateSorting(animations) {
-    let i = 0;
-
-    function processAnimation() {
-      if (i < animations.length && !isPaused) {
+  const animateSorting = (animations) => {
+    const timeouts = [];
+    for (let i = 0; i < animations.length; i++) {
+      const timeout = setTimeout(() => {
         const [barOneIdx, barTwoIdx] = animations[i];
         const arrayBars = document.getElementsByClassName("array-bar");
         arrayBars[barOneIdx].style.backgroundColor = "red";
@@ -55,30 +58,31 @@ function BubbleSort() {
           arrayBars[barTwoIdx].style.height = tempHeight;
           arrayBars[barOneIdx].style.backgroundColor = "blue";
           arrayBars[barTwoIdx].style.backgroundColor = "blue";
-
-          i++;
-          setTimeout(processAnimation, 20);
-        }, 10);
-      }
+        }, 100);
+      }, i * 200);
+      timeouts.push(timeout);
     }
 
-    processAnimation();
-  }
+    setTimeout(() => {
+      setIsSorting(false);
+      setAnimationTimeouts([]);
+    }, animations.length * 200);
 
-  function handlePause() {
-    setIsPaused(true);
-    console.log(isPaused);
-  }
+    setAnimationTimeouts(timeouts);
+  };
 
-  function handleResume() {
-    setIsPaused(false);
-    console.log(isPaused);
-    animateSorting(animations);
-  }
+  const handleReset = () => {
+    animationTimeouts.forEach((timeout) => clearTimeout(timeout));
+    setAnimationTimeouts([]);
+    initialiseArray();
+  };
 
   return (
     <div>
       <h1>Bubble Sort</h1>
+      <h4>
+        Time Complexity = O(n<sup>2</sup>)
+      </h4>
       <div className="array-container">
         <div className="controls-container">
           <select
@@ -87,22 +91,15 @@ function BubbleSort() {
             onChange={(event) => setLength(parseInt(event.target.value))}
             value={len}
           >
-            <option value="40">40</option>
-            <option value="70">70</option>
-            <option value="90">90</option>
-            <option value="100">100</option>
-            <option value="120">120</option>
+            <option value="40">30</option>
+            <option value="70">40</option>
+            <option value="90">50</option>
+            <option value="100">60</option>
           </select>
           <button onClick={bubbleSort} disabled={isSorting}>
             Start
           </button>
-          <button onClick={initialiseArray}>Reset Array</button>
-          <button onClick={handlePause} disabled={isPaused || !isSorting}>
-            Pause
-          </button>
-          <button onClick={handleResume} disabled={!isPaused}>
-            Resume
-          </button>
+          <button onClick={handleReset}>Reset Array</button>
         </div>
         <div className="array-bars">
           {array.map((val, idx) => (

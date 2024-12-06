@@ -9,6 +9,7 @@ function App() {
   const navigate = useNavigate()
   return (
     <div>
+      <h1>Sorting Visualiser</h1>
      <div >
       <button onClick={()=>navigate('/bubblesort')}>Bubble Sort</button>
       <button onClick={()=>navigate('/quicksort')}>Quick Sort</button>
@@ -18,9 +19,9 @@ function App() {
 
       <Routes>
         <Route path="/bubblesort" element={<BubbleSort  />} />
-        <Route path="/insertionsort" element={<InsertionSort/>} />
-        <Route path="/mergesort" element={<MergeSort />} />
-        <Route path="/quicksort" element={<QuickSort/>} />
+        <Route path="/insertionsort" element={<InsertionSort key="merge"/>} />
+        <Route path="/mergesort" element={<MergeSort key="merge" />} />
+        <Route path="/quicksort" element={<QuickSort key="quick"/>} />
       </Routes>
     </div>
   );
