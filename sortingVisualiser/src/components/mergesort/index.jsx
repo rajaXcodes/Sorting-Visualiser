@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./index.css";
 
+
 function MergeSort() {
   const [array, setArray] = useState([]);
   const [len, setLength] = useState(50);
@@ -23,9 +24,9 @@ function MergeSort() {
     return () => {
       animationTimeouts.forEach((timeout) => clearTimeout(timeout)); // Cleanup timeouts on unmount
       setAnimationTimeouts([]); // Reset animation state
-      setIsSorting(false); // Reset sorting state
+      setIsSorting(true); // Reset sorting state
     };
-  }, []);
+  }, [isSorting]);
 
   function mergeSort() {
     if (isSorting) return;

@@ -14,16 +14,19 @@ function QuickSort() {
     setArray(newArray);
     setIsSorting(false);
   }
+
+  useEffect(() => {
+    initialiseArray();
+  }, [len]);
+
   useEffect(() => {
     return () => {
       animationTimeouts.forEach((timeout) => clearTimeout(timeout));
       setAnimationTimeouts([]);
-      setIsSorting(false); 
+      setIsSorting(true); 
     };
-  }, []);
-  useEffect(() => {
-    initialiseArray();
-  }, [len]);
+  }, [isSorting]);
+ 
 
   function util() {
     if (isSorting) return;
