@@ -11,14 +11,14 @@ function App() {
     <div>
       <h1>Sorting Visualiser</h1>
      <div >
-      <button onClick={()=>navigate('/bubblesort')}>Bubble Sort</button>
+      <button onClick={()=>navigate('/')}>Bubble Sort</button>
       <button onClick={()=>navigate('/quicksort')}>Quick Sort</button>
       <button onClick={()=>navigate('/insertionsort')}>Insertion Sort</button>
       <button onClick={()=>navigate('/mergesort')}>Merge Sort</button>
      </div>
 
       <Routes>
-        <Route path="/bubblesort" element={<BubbleSort  />} />
+        <Route path="/" element={<BubbleSort  />} />
         <Route path="/insertionsort" element={<InsertionSort key="merge"/>} />
         <Route path="/mergesort" element={<MergeSort key="merge" />} />
         <Route path="/quicksort" element={<QuickSort key="quick"/>} />
