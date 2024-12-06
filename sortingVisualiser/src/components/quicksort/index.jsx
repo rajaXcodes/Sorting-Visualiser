@@ -18,7 +18,7 @@ function QuickSort() {
     return () => {
       animationTimeouts.forEach((timeout) => clearTimeout(timeout));
       setAnimationTimeouts([]);
-      setIsSorting(false); // Reset sorting state
+      setIsSorting(false); 
     };
   }, []);
   useEffect(() => {

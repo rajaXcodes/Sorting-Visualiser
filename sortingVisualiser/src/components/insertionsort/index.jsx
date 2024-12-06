@@ -21,9 +21,9 @@ function InsertionSort() {
 
   useEffect(() => {
     return () => {
-      animationTimeouts.forEach((timeout) => clearTimeout(timeout)); // Cleanup timeouts on unmount
-      setAnimationTimeouts([]); // Reset animation state
-      setIsSorting(false); // Reset sorting state
+      animationTimeouts.forEach((timeout) => clearTimeout(timeout));
+      setAnimationTimeouts([]);
+      setIsSorting(false);
     };
   }, []);
 

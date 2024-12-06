@@ -20,14 +20,14 @@ function BubbleSort() {
   }, [len]);
   useEffect(() => {
     return () => {
-      animationTimeouts.forEach((timeout) => clearTimeout(timeout)); // Cleanup timeouts on unmount
-      setAnimationTimeouts([]); // Reset animation state
-      setIsSorting(false); // Reset sorting state
+      animationTimeouts.forEach((timeout) => clearTimeout(timeout)); 
+      setAnimationTimeouts([]);
+      setIsSorting(false); 
     };
   }, []);
   function bubbleSort() {
     if (isSorting) return;
-    setIsSorting(true); // Set sorting state to true when sorting starts
+    setIsSorting(true); 
     const animations = [];
     const copyarray = [...array];
 
