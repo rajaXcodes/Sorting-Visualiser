@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./bubbleSort.css";
 
+
 function BubbleSort() {
   const [array, setArray] = useState([]);
   const [len, setLength] = useState(50);
@@ -22,9 +23,9 @@ function BubbleSort() {
     return () => {
       animationTimeouts.forEach((timeout) => clearTimeout(timeout)); 
       setAnimationTimeouts([]);
-      setIsSorting(false); 
+      setIsSorting(true); 
     };
-  }, []);
+  }, [isSorting]);
   function bubbleSort() {
     if (isSorting) return;
     setIsSorting(true); 

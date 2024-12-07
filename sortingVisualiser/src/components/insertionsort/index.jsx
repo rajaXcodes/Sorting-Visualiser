@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./index.css";
 
+
 function InsertionSort() {
   const [array, setArray] = useState([]);
   const [len, setLength] = useState(50);
@@ -23,9 +24,9 @@ function InsertionSort() {
     return () => {
       animationTimeouts.forEach((timeout) => clearTimeout(timeout));
       setAnimationTimeouts([]);
-      setIsSorting(false);
+      setIsSorting(true);
     };
-  }, []);
+  }, [isSorting]);
 
   function insertionSort() {
     if (isSorting) return;
